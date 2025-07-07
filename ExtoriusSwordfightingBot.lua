@@ -303,7 +303,7 @@ delay(0,function()
 
 	local random1N = 80000
 
-	runService.Stepped:Connect(function()
+	runService.RenderStepped:Connect(function()
 		if enabled then
 			local target = getnearesttarget()
 			if not target then bodyGyro.Parent = RS return end
