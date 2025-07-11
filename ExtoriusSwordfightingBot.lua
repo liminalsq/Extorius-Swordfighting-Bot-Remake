@@ -128,7 +128,7 @@ local strafeOffset = Tab:CreateSlider({
 	end,
 })
 
-local strafeTime = Tab:CreateSlider({
+local strafeTiming = Tab:CreateSlider({
 	Name = "Strafe Time",
 	Range = {0, 1},
 	Increment = .1,
@@ -416,7 +416,7 @@ delay(0,function()
 					if target:FindFirstChildOfClass("ForceField") then
 						humanoid:MoveTo(r.Position - (r.Position - root.Position).Unit * 15)
 					else
-						if math.random(1,25) then
+						if math.random(1,25) == 1 then
 							if tick() - lowHealthLunge > 0.7 then
 								lowHealthLunge = tick()
 								humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)))
