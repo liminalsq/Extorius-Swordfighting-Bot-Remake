@@ -89,6 +89,19 @@ local autoEq = Tab:CreateToggle({
 	end,
 })
 
+local toolName = "sword" -- As "sword" because the script finds the tool by whatever matches this within it's name.
+
+local label1 = Tab:CreateLabel("In case games have two tools, this is here for you to define your tool by name.") -- I don't know why this is defined lmao.
+
+local toolnameinput = Tab:CreateInput({
+	Name = "Tool Name",
+	PlaceholderText = "ClassicSword",
+	RemoveTextAfterFocusLost = false,
+	Callback = function(Text)
+		toolName = Text
+	end,
+})
+
 repeat
 	wait()
 	humanoid = char:FindFirstChildOfClass("Humanoid")
@@ -109,7 +122,7 @@ local strafeOffset = Tab:CreateSlider({
 	Increment = 1,
 	Suffix = "BotStrafe",
 	CurrentValue = 1,
-	Flag = "StrafeAmount", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Flag = "StrafeAmount", 
 	Callback = function(Value)
 		strafe = Value
 	end,
@@ -121,7 +134,7 @@ local strafeTime = Tab:CreateSlider({
 	Increment = .1,
 	Suffix = "Time",
 	CurrentValue = 0.05,
-	Flag = "StrafeTime", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Flag = "StrafeTime", 
 	Callback = function(Value)
 		strafeTime = Value
 	end,
@@ -135,7 +148,7 @@ local turnStrafe = Tab:CreateSlider({
 	Increment = 1,
 	Suffix = "StrafeTurnAmount",
 	CurrentValue = 1,
-	Flag = "Turning Strafe Amount", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Flag = "Turning Strafe Amount", 
 	Callback = function(Value)
 		turnStrafeOffset = Value
 	end,
@@ -149,7 +162,7 @@ local aimOff = Tab:CreateSlider({
 	Increment = 1,
 	Suffix = "Offset",
 	CurrentValue = 1,
-	Flag = "Aim Offset", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Flag = "Aim Offset", 
 	Callback = function(Value)
 		aimOffset = Value
 	end,
@@ -163,7 +176,7 @@ local lungeDistanceSlider = Tab:CreateSlider({
 	Increment = 1,
 	Suffix = "Distance",
 	CurrentValue = 20,
-	Flag = "Lunge Distance", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Flag = "Lunge Distance", 
 	Callback = function(Value)
 		lungeDistance = Value
 	end,
@@ -326,7 +339,16 @@ delay(0,function()
 			humanoid.AutoRotate = false
 			local dir = ((r.CFrame * CFrame.new(2,0,0).Position) - root.Position).Unit * Vector3.new(1,0,1)
 			local dist = (r.Position - root.Position).Magnitude
-			local tool = char:FindFirstChildOfClass("Tool")
+			local tool
+			for _, v in ipairs(char:GetChildren()) do
+				if v:IsA("Tool") and toolName and string.lower(v.Name):find(string.lower(toolName)) then
+					tool = v
+					break
+				end
+			end
+
+			tool = tool or char:FindFirstChildOfClass("Tool")
+
 			local enemyTool = target:FindFirstChildOfClass("Tool")
 
 			local bestCFrame = findBest(tool, targetPart, turnStrafeOffset + (turnStrafeOffset * math.random(1,random1N)) / 5000)
