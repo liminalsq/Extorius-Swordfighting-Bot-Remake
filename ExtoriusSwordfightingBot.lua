@@ -430,7 +430,7 @@ delay(0,function()
 				humanoid.Jump = true
 			end
 
-			if (dist <= 15.5 and r.Position.Y - 0.5 > root.Position.Y) and r.Velocity > 0.1 then
+			if (dist <= 15.5 and r.Position.Y - 0.5 > root.Position.Y) and r.Velocity.Magnitude > 0.1 then
 				humanoid:MoveTo(root.Position + root.CFrame.LookVector * -1)
 			end
 
