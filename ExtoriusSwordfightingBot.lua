@@ -280,6 +280,20 @@ local function findBest(tool, part, offset)
 	end
 end
 
+local function getClosestBodyPart(char)
+	local closestPart = nil
+	local closestDist = math.huge
+	for i, v in pairs(char:GetChildren()) do
+		if v:IsA("BasePart") then
+			local dist = (root.Position - v.Position).Magnitude
+			if dist < closestDist then
+				closestPart = v
+				closestDist = dist
+			end
+		end
+	end
+	return closestPart
+end
 
 delay(0,function()
 	local bodyGyro = Instance.new("BodyGyro")
@@ -297,8 +311,6 @@ delay(0,function()
 	local timer2 = 0
 	local timer3 = 0
 	local timer4 = 0
-	local timer5 = 0
-
 	local lowHealthLunge = 0
 
 	local random1N = 80000
@@ -309,7 +321,7 @@ delay(0,function()
 			if not target then bodyGyro.Parent = RS return end
 			local h, r = target:FindFirstChildOfClass("Humanoid"), target:FindFirstChild("HumanoidRootPart")
 			if not h and not r then bodyGyro.Parent = RS return end
-			local targetPart = --[[target:FindFirstChild("Right Arm") or target:FindFirstChild("RightHand")]] r
+			local targetPart = getClosestBodyPart(target)
 			bodyGyro.Parent = root
 			humanoid.AutoRotate = false
 			local dir = ((r.CFrame * CFrame.new(2,0,0).Position) - root.Position).Unit * Vector3.new(1,0,1)
@@ -323,20 +335,23 @@ delay(0,function()
 			--local varedRandom = math.random(1,2)
 			local strafeVect3 = Vector3.new(math.random(-strafe,strafe),0,math.random(-strafe,strafe)) * 10
 
-			if math.random(1,20) > 5 then
+			if math.random(1,20) > 3 then
 				if r.Velocity.Magnitude > 0.1 and h.MoveDirection.Magnitude > 0.1 then
 					if dist < 27 + math.random() then
 						if tick() - lastStrafe > math.random(1,100) / 550 then
 							lastStrafe = tick()
-							humanoid:MoveTo(r.Position + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/25))
+							humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/25))
 						end
 					else
-						humanoid:MoveTo(r.Position + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)))
+						if tick() - lastStrafe > strafeTime then
+							lastStrafe = tick()
+							humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/10))
+						end
 					end
 				else
-					if tick() - lastStrafe > (strafeTime + math.random()) / (r.Velocity.Magnitude / 25) then
+					if tick() - lastStrafe > strafeTime then
 						lastStrafe = tick()
-						humanoid:MoveTo(r.Position + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/10))
+						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/100))
 					end
 				end
 				if bestCFrame then
@@ -348,7 +363,7 @@ delay(0,function()
 				end
 			else
 				if math.random(1,2) == 1 then
-					if tick() - timer1 > (0.095 * ((r.Velocity.Magnitude * 2) / 25)) then
+					if tick() - timer1 > 0.5 then
 						timer1 = tick()
 						humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + strafeVect3)
 						if bestCFrame then
@@ -360,7 +375,7 @@ delay(0,function()
 						end
 					end
 				else
-					if tick() - timer1 > (0.11 * ((r.Velocity.Magnitude * 2) / 25)) then
+					if tick() - timer1 > 0.5 then
 						timer1 = tick()
 						humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + (strafeVect3/10))
 						if c360 then
@@ -382,22 +397,19 @@ delay(0,function()
 						if math.random(1,25) then
 							if tick() - lowHealthLunge > 0.7 then
 								lowHealthLunge = tick()
-								humanoid:MoveTo(r.Position + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)))
+								humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)))
 							end
 						end
 					end
 				end
 			end
 
-			if math.random(1,45) == 1 then
+			if math.random(1,45) == 1 or r.Position.Y - 0.5 > root.Position.Y or (math.random(1,15) == 1 and dist <= 10 + (r.Velocity.Magnitude / 3)) then
 				humanoid.Jump = true
 			end
 
-			if h:GetState(Enum.HumanoidStateType.Jumping) and (r.Velocity.Magnitude > 0.1 and h.MoveDirection.Magnitude > 0.1) and r.CFrame.LookVector.Unit:Dot((root.Position - r.Position).Unit) > 0.5 then
-				if tick() - timer5 > 0.35 then
-					humanoid.Jump = true
-					humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + strafeVect3)
-				end
+			if (dist <= 15.5 and r.Position.Y - 0.5 > root.Position.Y) and r.Velocity > 0.1 then
+				humanoid:MoveTo(root.Position + root.CFrame.LookVector * -1)
 			end
 
 			if enemyTool and r.CFrame.LookVector.Unit:Dot((root.Position - r.Position).Unit) > 0.6 then
@@ -408,7 +420,7 @@ delay(0,function()
 							humanoid:MoveTo(root.Position + root.CFrame.LookVector * -4)
 							humanoid.Jump = true
 						end
-						humanoid:MoveTo(r.Position + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/25))
+						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/25))
 						tool:Activate()
 					end
 				end)
