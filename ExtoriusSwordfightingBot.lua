@@ -70,7 +70,7 @@ local autoMove = Tab:CreateToggle({
 local aimUsesOffset = false
 
 local aimUseOffset = Tab:CreateToggle({
-	Name = "Aim uses Offset (Broken)",
+	Name = "Aim uses Offset",
 	CurrentValue = false,
 	Flag = "Aim use Offset",
 	Callback = function(Value)
@@ -277,19 +277,14 @@ local function findBest(tool, part, offset)
 		game:GetService("Debris"):AddItem(rayPart, 0.1)
 	end]] --this is a debug
 
-	if not aimUsesOffset then
-		if bestPos then
-			local flatDir = (bestPos - swordTipPos).Unit * Vector3.new(1, 0, 1)
-			--bodyGyro.CFrame = CFrame.new(root.Position, root.Position + flatDir) * CFrame.Angles(0,math.rad(offset or 0),0)
-			return CFrame.new(root.Position, root.Position + flatDir) * CFrame.Angles(0,math.rad(offset or 0),0)
-		else
-			local fallbackDir = (part.Position - swordTipPos).Unit * Vector3.new(1, 0, 1)
-			--bodyGyro.CFrame = CFrame.new(root.Position, root.Position + fallbackDir) * CFrame.Angles(0,math.rad(offset or 0),0)
-			return CFrame.new(root.Position, root.Position + fallbackDir) * CFrame.Angles(0,math.rad(offset or 0),0)
-		end
+	if bestPos then
+		local flatDir = (bestPos - swordTipPos).Unit * Vector3.new(1, 0, 1)
+		--bodyGyro.CFrame = CFrame.new(root.Position, root.Position + flatDir) * CFrame.Angles(0,math.rad(offset or 0),0)
+		return CFrame.new(root.Position, root.Position + flatDir) * CFrame.Angles(0,math.rad(offset or 0),0)
 	else
-		local preDir = ((r.CFrame * CFrame.new(aimOffset,0,0)).Position - root.Position).Unit * Vector3.new(1,0,1)
-		return CFrame.new(root.Position, root.Position + preDir) * CFrame.Angles(0,math.rad(offset or 0),0)
+		local fallbackDir = (part.Position - swordTipPos).Unit * Vector3.new(1, 0, 1)
+		--bodyGyro.CFrame = CFrame.new(root.Position, root.Position + fallbackDir) * CFrame.Angles(0,math.rad(offset or 0),0)
+		return CFrame.new(root.Position, root.Position + fallbackDir) * CFrame.Angles(0,math.rad(offset or 0),0)
 	end
 end
 
@@ -337,9 +332,22 @@ delay(0,function()
 			local targetPart = getClosestBodyPart(target)
 			bodyGyro.Parent = root
 			humanoid.AutoRotate = false
-			local dir = ((r.CFrame * CFrame.new(2,0,0).Position) - root.Position).Unit * Vector3.new(1,0,1)
+			local dir = ((r.CFrame * CFrame.new(aimOffset,0,0).Position) - root.Position).Unit * Vector3.new(1,0,1)
 			local dist = (r.Position - root.Position).Magnitude
 			local tool
+
+			if autoEquip then
+				local backpack = player:FindFirstChildOfClass("Backpack")
+				if backpack and not char:FindFirstChildOfClass("Tool") then
+					for _, t in ipairs(backpack:GetChildren()) do
+						if t:IsA("Tool") and string.lower(t.Name):find(string.lower(toolName)) then
+							task.delay(0.8, function()humanoid:EquipTool(t)end)
+							break
+						end
+					end
+				end
+			end
+
 			for _, v in ipairs(char:GetChildren()) do
 				if v:IsA("Tool") and toolName and string.lower(v.Name):find(string.lower(toolName)) then
 					tool = v
@@ -376,33 +384,48 @@ delay(0,function()
 						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/100))
 					end
 				end
-				if bestCFrame then
-					random1N = 80000
-					bodyGyro.CFrame = bestCFrame
+				if not aimUsesOffset then
+					if bestCFrame then
+						random1N = 80000
+						bodyGyro.CFrame = bestCFrame
+					else
+						random1N = 80000
+						bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad((turnStrafeOffset * math.random(1,random1N)) / 5000),0)
+					end
 				else
 					random1N = 80000
-					bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
+					bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad((turnStrafeOffset * math.random(1,random1N)) / 5000),0)
 				end
 			else
 				if math.random(1,2) == 1 then
 					if tick() - timer1 > 0.5 then
 						timer1 = tick()
 						humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + strafeVect3)
-						if bestCFrame then
-							random1N = 5000000
-							bodyGyro.CFrame = bestCFrame
+						if not aimUsesOffset then
+							if bestCFrame then
+								random1N = 5000000
+								bodyGyro.CFrame = bestCFrame
+							else
+								random1N = 5000000
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad((turnStrafeOffset * math.random(1,random1N)) / 5000),0)
+							end
 						else
-							random1N = 80000
-							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
+							random1N = 5000000
+							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad((turnStrafeOffset * math.random(1,random1N)) / 5000),0)
 						end
 					end
 				else
 					if tick() - timer1 > 0.5 then
 						timer1 = tick()
 						humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + (strafeVect3/10))
-						if c360 then
-							random1N = 80000
-							bodyGyro.CFrame = c360
+						if not aimUsesOffset then
+							if c360 then
+								random1N = 80000
+								bodyGyro.CFrame = c360
+							else
+								random1N = 80000
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(360),0)
+							end
 						else
 							random1N = 80000
 							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(360),0)
@@ -416,7 +439,7 @@ delay(0,function()
 					if target:FindFirstChildOfClass("ForceField") then
 						humanoid:MoveTo(r.Position - (r.Position - root.Position).Unit * 15)
 					else
-						if math.random(1,25) == 1 then
+						if math.random(1,25) then
 							if tick() - lowHealthLunge > 0.7 then
 								lowHealthLunge = tick()
 								humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)))
