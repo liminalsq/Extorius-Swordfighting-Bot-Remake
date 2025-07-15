@@ -341,7 +341,8 @@ delay(0,function()
 				if backpack and not char:FindFirstChildOfClass("Tool") then
 					for _, t in ipairs(backpack:GetChildren()) do
 						if t:IsA("Tool") and string.lower(t.Name):find(string.lower(toolName)) then
-							task.delay(0.8, function()humanoid:EquipTool(t)end)
+							wait(.8)
+							humanoid:EquipTool(t)
 							break
 						end
 					end
@@ -370,62 +371,47 @@ delay(0,function()
 					if dist < 27 + math.random() then
 						if tick() - lastStrafe > math.random(1,100) / 550 then
 							lastStrafe = tick()
-							humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/25))
+							humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + -(r.CFrame.RightVector * 2 + r.CFrame.LookVector * 2) + (strafeVect3/25))
 						end
 					else
 						if tick() - lastStrafe > strafeTime then
 							lastStrafe = tick()
-							humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/10))
+							humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + -(r.CFrame.RightVector * 2 + r.CFrame.LookVector * 2) + (strafeVect3/10))
 						end
 					end
 				else
 					if tick() - lastStrafe > strafeTime then
 						lastStrafe = tick()
-						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/100))
+						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + -(r.CFrame.RightVector * 2 + r.CFrame.LookVector * 2) + (strafeVect3/100))
 					end
 				end
-				if not aimUsesOffset then
-					if bestCFrame then
-						random1N = 80000
-						bodyGyro.CFrame = bestCFrame
-					else
-						random1N = 80000
-						bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad((turnStrafeOffset * math.random(1,random1N)) / 5000),0)
-					end
+				if bestCFrame then
+					random1N = 80000
+					bodyGyro.CFrame = bestCFrame
 				else
 					random1N = 80000
-					bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad((turnStrafeOffset * math.random(1,random1N)) / 5000),0)
+					bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
 				end
 			else
 				if math.random(1,2) == 1 then
 					if tick() - timer1 > 0.5 then
 						timer1 = tick()
 						humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + strafeVect3)
-						if not aimUsesOffset then
-							if bestCFrame then
-								random1N = 5000000
-								bodyGyro.CFrame = bestCFrame
-							else
-								random1N = 5000000
-								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad((turnStrafeOffset * math.random(1,random1N)) / 5000),0)
-							end
-						else
+						if bestCFrame then
 							random1N = 5000000
-							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad((turnStrafeOffset * math.random(1,random1N)) / 5000),0)
+							bodyGyro.CFrame = bestCFrame
+						else
+							random1N = 80000
+							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
 						end
 					end
 				else
 					if tick() - timer1 > 0.5 then
 						timer1 = tick()
 						humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + (strafeVect3/10))
-						if not aimUsesOffset then
-							if c360 then
-								random1N = 80000
-								bodyGyro.CFrame = c360
-							else
-								random1N = 80000
-								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(360),0)
-							end
+						if c360 then
+							random1N = 80000
+							bodyGyro.CFrame = c360
 						else
 							random1N = 80000
 							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(360),0)
@@ -434,26 +420,26 @@ delay(0,function()
 				end
 			end
 
-			if target:FindFirstChildOfClass("ForceField") or humanoid.Health / humanoid.MaxHealth < 0.68 then
-				if dist < 15 then
+			if target:FindFirstChildOfClass("ForceField") or humanoid.Health / humanoid.MaxHealth < 0.68 or h.Health == math.huge then
+				if dist < 25 then
 					if target:FindFirstChildOfClass("ForceField") then
-						humanoid:MoveTo(r.Position - (r.Position - root.Position).Unit * 15)
+						humanoid:MoveTo(r.Position - (r.Position - root.Position).Unit * 25)
 					else
 						if math.random(1,25) then
 							if tick() - lowHealthLunge > 0.7 then
 								lowHealthLunge = tick()
-								humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)))
+								humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + -(r.CFrame.RightVector * 2 + r.CFrame.LookVector * 2))
 							end
 						end
 					end
 				end
 			end
 
-			if math.random(1,45) == 1 or r.Position.Y - 0.5 > root.Position.Y or (math.random(1,15) == 1 and dist <= 10 + (r.Velocity.Magnitude / 3)) then
+			if math.random(1,45) == 1 or r.Position.Y - 0.5 > root.Position.Y or (math.random(1,15) == 1 and dist <= 10 + -(r.Velocity.Magnitude / 3)) then
 				humanoid.Jump = true
 			end
 
-			if (dist <= 15.5 and r.Position.Y - 0.5 > root.Position.Y) and r.Velocity.Magnitude > 0.1 then
+			if (dist <= 15.5 and r.Position.Y - 0.5 > root.Position.Y) and r.Velocity > 0.1 then
 				humanoid:MoveTo(root.Position + root.CFrame.LookVector * -1)
 			end
 
@@ -465,7 +451,7 @@ delay(0,function()
 							humanoid:MoveTo(root.Position + root.CFrame.LookVector * -4)
 							humanoid.Jump = true
 						end
-						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + (r.Position - root.Position).Unit:Cross(Vector3.new(0,1,0)) + (strafeVect3/25))
+						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + -(r.CFrame.RightVector * 2 + r.CFrame.LookVector * 2) + (strafeVect3/25))
 						tool:Activate()
 					end
 				end)
