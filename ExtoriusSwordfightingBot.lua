@@ -319,6 +319,7 @@ delay(0,function()
 	local timer2 = 0
 	local timer3 = 0
 	local timer4 = 0
+	local equipTimer = 0
 	local lowHealthLunge = 0
 
 	local random1N = 80000
@@ -341,8 +342,9 @@ delay(0,function()
 				if backpack and not char:FindFirstChildOfClass("Tool") then
 					for _, t in ipairs(backpack:GetChildren()) do
 						if t:IsA("Tool") and string.lower(t.Name):find(string.lower(toolName)) then
-							wait(.8)
-							humanoid:EquipTool(t)
+							if tick() - equipTimer > 0.7 then
+								humanoid:EquipTool(t)
+							end
 							break
 						end
 					end
@@ -439,7 +441,7 @@ delay(0,function()
 				humanoid.Jump = true
 			end
 
-			if (dist <= 15.5 and r.Position.Y - 0.5 > root.Position.Y) and r.Velocity > 0.1 then
+			if (dist <= 15.5 and r.Position.Y - 0.5 > root.Position.Y) and r.Velocity.Magnitude > 0.1 then
 				humanoid:MoveTo(root.Position + root.CFrame.LookVector * -1)
 			end
 
