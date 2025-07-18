@@ -319,7 +319,6 @@ delay(0,function()
 	local timer2 = 0
 	local timer3 = 0
 	local timer4 = 0
-	local equipTimer = 0
 	local lowHealthLunge = 0
 
 	local random1N = 80000
@@ -342,10 +341,11 @@ delay(0,function()
 				if backpack and not char:FindFirstChildOfClass("Tool") then
 					for _, t in ipairs(backpack:GetChildren()) do
 						if t:IsA("Tool") and string.lower(t.Name):find(string.lower(toolName)) then
-							if tick() - equipTimer > 0.7 then
-								equipTimer = tick()
-								humanoid:EquipTool(t)
-							end
+							delay(0.8, function()
+								if t.Parent == backpack then
+									humanoid:EquipTool(t)
+								end
+							end)
 							break
 						end
 					end
