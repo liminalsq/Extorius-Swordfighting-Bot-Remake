@@ -388,33 +388,48 @@ delay(0,function()
 						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + -(r.CFrame.RightVector * 2 + r.CFrame.LookVector * 2) + (strafeVect3/100))
 					end
 				end
-				if bestCFrame then
-					random1N = 80000
-					bodyGyro.CFrame = bestCFrame
+				if not aimUsesOffset then
+					if bestCFrame then
+						random1N = 80000
+						bodyGyro.CFrame = bestCFrame
+					else
+						random1N = 80000
+						bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
+					end
 				else
 					random1N = 80000
-					bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
+					bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0)
 				end
 			else
 				if math.random(1,2) == 1 then
 					if tick() - timer1 > 0.5 then
 						timer1 = tick()
 						humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + strafeVect3)
-						if bestCFrame then
-							random1N = 5000000
-							bodyGyro.CFrame = bestCFrame
+						if not aimUsesOffset then
+							if bestCFrame then
+								random1N = 5000000
+								bodyGyro.CFrame = bestCFrame
+							else
+								random1N = 5000000
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
+							end
 						else
-							random1N = 80000
-							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
+							random1N = 5000000
+							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0)
 						end
 					end
 				else
 					if tick() - timer1 > 0.5 then
 						timer1 = tick()
 						humanoid:MoveTo(root.Position + root.CFrame.LookVector * -5 + (strafeVect3/10))
-						if c360 then
-							random1N = 80000
-							bodyGyro.CFrame = c360
+						if not aimUsesOffset then
+							if c360 then
+								random1N = 80000
+								bodyGyro.CFrame = c360
+							else
+								random1N = 80000
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(360),0)
+							end
 						else
 							random1N = 80000
 							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(360),0)
