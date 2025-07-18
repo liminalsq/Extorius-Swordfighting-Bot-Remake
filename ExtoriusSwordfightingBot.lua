@@ -343,6 +343,7 @@ delay(0,function()
 					for _, t in ipairs(backpack:GetChildren()) do
 						if t:IsA("Tool") and string.lower(t.Name):find(string.lower(toolName)) then
 							if tick() - equipTimer > 0.7 then
+								equipTimer = tick()
 								humanoid:EquipTool(t)
 							end
 							break
