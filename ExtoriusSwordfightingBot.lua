@@ -454,9 +454,9 @@ delay(0,function()
 							if dist <= wiggleDistance then
 								random1N = 80000
 								if not wiggleAmtDistBased then
-									bodyGyro.CFrame = bestCFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount))
+									bodyGyro.CFrame = bestCFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount),0)
 								else
-									bodyGyro.CFrame = bestCFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount))
+									bodyGyro.CFrame = bestCFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount),0)
 								end
 							end
 						else
@@ -468,9 +468,9 @@ delay(0,function()
 							if wiggling then
 								random1N = 80000
 								if not wiggleAmtDistBased then	
-									bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount))
+									bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount),0)
 								else
-									bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount))
+									bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount),0)
 								end
 							else
 								random1N = 80000
@@ -483,9 +483,9 @@ delay(0,function()
 						random1N = 80000
 						if dist <= wiggleDistance then
 							if not wiggleAmtDistBased then	
-								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount))
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount),0)
 							else
-								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount))
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount),0)
 							end
 						end
 					else
