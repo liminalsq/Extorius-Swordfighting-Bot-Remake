@@ -151,7 +151,7 @@ local wiggleBool = Tab:CreateToggle({
 	CurrentValue = wiggling,
 	Flag = "Wiggle",
 	Callback = function(Value)
-		wiggling = not Value
+		wiggling = not wiggling
 	end,
 })
 
@@ -160,7 +160,7 @@ local wiggleAmtDistBased = Tab:CreateToggle({
 	CurrentValue = wiggleAmtDistBased,
 	Flag = "WiggleAmtDistBased",
 	Callback = function(Value)
-		wiggleAmtDistBased = not Value
+		wiggleAmtDistBased = not wiggling
 	end,
 })
 
