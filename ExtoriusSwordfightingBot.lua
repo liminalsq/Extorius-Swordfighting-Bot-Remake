@@ -428,14 +428,6 @@ delay(0,function()
 
 			--local varedRandom = math.random(1,2)
 			local strafeVect3 = Vector3.new(math.random(-strafe,strafe),0,math.random(-strafe,strafe)) * 10
-			
-			if wiggling then
-				if not wiggleAmtDistBased then
-					bodyGyro.CFrame = bodyGyro.CFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmtDistBased))
-				else
-					bodyGyro.CFrame = bodyGyro.CFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (dist / wiggleAmtDistBased)))
-				end
-			end
 
 			if math.random(1,20) > 3 then
 				if r.Velocity.Magnitude > 0.1 and h.MoveDirection.Magnitude > 0.1 then
@@ -458,15 +450,48 @@ delay(0,function()
 				end
 				if not aimUsesOffset then
 					if bestCFrame then
-						random1N = 80000
-						bodyGyro.CFrame = bestCFrame
+						if wiggling then
+							if dist <= wiggleDistance then
+								random1N = 80000
+								if not wiggleAmtDistBased then
+									bodyGyro.CFrame = bestCFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount))
+								else
+									bodyGyro.CFrame = bestCFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount))
+								end
+							end
+						else
+							random1N = 80000
+							bodyGyro.CFrame = bestCFrame
+						end							
 					else
-						random1N = 80000
-						bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
+						if dist <= wiggleDistance then
+							if wiggling then
+								random1N = 80000
+								if not wiggleAmtDistBased then	
+									bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount))
+								else
+									bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount))
+								end
+							else
+								random1N = 80000
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
+							end
+						end
 					end
 				else
-					random1N = 80000
-					bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0)
+					if wiggling then
+						random1N = 80000
+						if dist <= wiggleDistance then
+							if not wiggleAmtDistBased then	
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount))
+							else
+								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (0.4 / dist) * wiggleAmount))
+							end
+						end
+					else
+						random1N = 80000
+						bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0)
+					end
 				end
 			else
 				if math.random(1,2) == 1 then
@@ -538,7 +563,9 @@ delay(0,function()
 							humanoid.Jump = true
 						end
 						humanoid:MoveTo((r.Position - (r.Position - root.Position).Unit * 3) + r.Velocity * 0.25 + -(r.CFrame.RightVector * 2 + r.CFrame.LookVector * 2) + (strafeVect3/25))
-						tool:Activate()
+						if tool then
+							tool:Activate()
+						end
 					end
 				end)
 			end
