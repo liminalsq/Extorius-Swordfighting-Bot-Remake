@@ -164,7 +164,7 @@ local wiggleAmtDistBased = Tab:CreateToggle({
 	end,
 })
 
-local wiggleDistance = Tab:CreateSlider({
+local wigglingDistance = Tab:CreateSlider({
 	Name = "Wiggle Distance",
 	Range = {0,100},
 	Increment = 1,
