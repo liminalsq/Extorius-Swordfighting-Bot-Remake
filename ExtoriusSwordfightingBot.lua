@@ -454,6 +454,9 @@ delay(0,function()
 							if dist <= wiggleDistance then
 								random1N = 80000
 								bodyGyro.CFrame = bestCFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount),0)
+							else
+								random1N = 80000
+								bodyGyro.CFrame = bestCFrame
 							end
 						else
 							random1N = 80000
@@ -468,6 +471,9 @@ delay(0,function()
 								random1N = 80000
 								bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
 							end
+						else
+							random1N = 80000
+							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
 						end
 					end
 				else
@@ -475,6 +481,9 @@ delay(0,function()
 						random1N = 80000
 						if dist <= wiggleDistance then
 							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir) * CFrame.Angles(0,math.rad(offset or 0),0) * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmount),0)
+						else
+							random1N = 80000
+							bodyGyro.CFrame = CFrame.new(root.Position, root.Position + dir)
 						end
 					else
 						random1N = 80000
