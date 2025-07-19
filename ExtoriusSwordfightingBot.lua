@@ -89,7 +89,7 @@ local autoEq = Tab:CreateToggle({
 	end,
 })
 
-local toolName = "sword" -- As "sword" because the script finds the tool by whatever matches this within it's name.
+local toolName = "sword" or "foil" -- As "sword" because the script finds the tool by whatever matches this within it's name. Foil is from Fencing.
 
 local label1 = Tab:CreateLabel("In case games have two tools, this is here for you to define your tool by name.") -- I don't know why this is defined lmao.
 
@@ -116,12 +116,18 @@ local strafe = 1
 local strafeTime = 0.05
 local lastStrafe = 0
 
+local wiggling = false
+local wiggleAmtDistBased = false
+local wiggleDistance = 13
+local wiggleSpeed = 45
+local wiggleAmount = 25
+
 local strafeOffset = Tab:CreateSlider({
 	Name = "Strafe Amount",
 	Range = {0, 10},
 	Increment = 1,
-	Suffix = "BotStrafe",
-	CurrentValue = 1,
+	Suffix = "Studs",
+	CurrentValue = strafe,
 	Flag = "StrafeAmount", 
 	Callback = function(Value)
 		strafe = Value
@@ -131,13 +137,67 @@ local strafeOffset = Tab:CreateSlider({
 local strafeTiming = Tab:CreateSlider({
 	Name = "Strafe Time",
 	Range = {0, 1},
-	Increment = .1,
-	Suffix = "Time",
-	CurrentValue = 0.05,
+	Increment = .01,
+	Suffix = "Milliseconds",
+	CurrentValue = strafeTime,
 	Flag = "StrafeTime", 
 	Callback = function(Value)
 		strafeTime = Value
 	end,
+})
+
+local wiggleBool = Tab:CreateToggle({
+	Name = "Wiggling",
+	CurrentValue = wiggling,
+	Flag = "Wiggle",
+	Callback = function(Value)
+		wiggling = not Value
+	end,
+})
+
+local wiggleAmtDistBased = Tab:CreateToggle({
+	Name = "Wiggle Amount is distance based",
+	CurrentValue = wiggleAmtDistBased,
+	Flag = "WiggleAmtDistBased",
+	Callback = function(Value)
+		wiggleAmtDistBased = not Value
+	end,
+})
+
+local wiggleDistance = Tab:CreateSlider({
+	Name = "Wiggle Distance",
+	Range = {0,100},
+	Increment = 1,
+	Suffix = "",
+	CurrentValue = wiggleDistance,
+	Flag = "WiggleDistance",
+	Callback = function(Value)
+		wiggleDistance = Value
+	end
+})
+
+local wigglingSpeed = Tab:CreateSlider({
+	Name = "Wiggle Speed",
+	Range = {0,100},
+	Increment = 1,
+	Suffix = "",
+	CurrentValue = wiggleSpeed,
+	Flag = "WiggleSpeed",
+	Callback = function(Value)
+		wiggleSpeed = Value
+	end
+})
+
+local wiggleAmt = Tab:CreateSlider({
+	Name = "Wiggle Amount",
+	Range = {0, 100},
+	Increment = 1,
+	Suffix = "",
+	CurrentValue = wiggleAmount,
+	Flag = "WiggleAmount", 
+	Callback = function(Value)
+		wiggleAmount = Value
+	end
 })
 
 local turnStrafeOffset = 1
@@ -147,7 +207,7 @@ local turnStrafe = Tab:CreateSlider({
 	Range = {0, 10},
 	Increment = 1,
 	Suffix = "StrafeTurnAmount",
-	CurrentValue = 1,
+	CurrentValue = turnStrafeOffset,
 	Flag = "Turning Strafe Amount", 
 	Callback = function(Value)
 		turnStrafeOffset = Value
@@ -161,7 +221,7 @@ local aimOff = Tab:CreateSlider({
 	Range = {-10, 10},
 	Increment = 1,
 	Suffix = "Offset",
-	CurrentValue = 1,
+	CurrentValue = aimOffset,
 	Flag = "Aim Offset", 
 	Callback = function(Value)
 		aimOffset = Value
@@ -174,8 +234,8 @@ local lungeDistanceSlider = Tab:CreateSlider({
 	Name = "Distance",
 	Range = {0, 100},
 	Increment = 1,
-	Suffix = "Distance",
-	CurrentValue = 20,
+	Suffix = "Studs",
+	CurrentValue = lungeDistance,
 	Flag = "Lunge Distance", 
 	Callback = function(Value)
 		lungeDistance = Value
@@ -368,6 +428,14 @@ delay(0,function()
 
 			--local varedRandom = math.random(1,2)
 			local strafeVect3 = Vector3.new(math.random(-strafe,strafe),0,math.random(-strafe,strafe)) * 10
+			
+			if wiggling then
+				if not wiggleAmtDistBased then
+					bodyGyro.CFrame = bodyGyro.CFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * wiggleAmtDistBased))
+				else
+					bodyGyro.CFrame = bodyGyro.CFrame * CFrame.Angles(0,math.rad(math.sin(tick() * wiggleSpeed) * (dist / wiggleAmtDistBased)))
+				end
+			end
 
 			if math.random(1,20) > 3 then
 				if r.Velocity.Magnitude > 0.1 and h.MoveDirection.Magnitude > 0.1 then
@@ -452,7 +520,7 @@ delay(0,function()
 					end
 				end
 			end
-
+			
 			if math.random(1,45) == 1 or r.Position.Y - 0.5 > root.Position.Y or (math.random(1,15) == 1 and dist <= 10 + -(r.Velocity.Magnitude / 3)) then
 				humanoid.Jump = true
 			end
