@@ -8,7 +8,7 @@ Optimal performance, no effort needed.
 
 ]]
 
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
 
 local Window = Rayfield:CreateWindow({
 	Name = "Swordfighting AI v4 REMAKE | Original by Noxu, remake by script_A.",
