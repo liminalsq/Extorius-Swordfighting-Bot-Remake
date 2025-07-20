@@ -8,7 +8,7 @@ Optimal performance, no effort needed.
 
 ]]
 
-local c00lgui = require(script.c00lgui)
+local c00lgui = loadstring(game:HttpGet("https://raw.githubusercontent.com/liminalsq/c00lGUI-UI-Library/refs/heads/main/c00lGUI.lua"))()
 
 local Window = c00lgui:CreateWindow("Extorius Swordfighting Bot | Original by Noxu, Remake by script_A")
 
