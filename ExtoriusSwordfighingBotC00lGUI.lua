@@ -11,6 +11,7 @@ Optimal performance, no effort needed.
 local c00lgui = loadstring(game:HttpGet("https://raw.githubusercontent.com/liminalsq/c00lGUI-UI-Library/refs/heads/main/c00lGUI.lua"))()
 
 local Window = c00lgui:CreateWindow("Extorius Swordfighting Bot | Original by Noxu, Remake by script_A")
+local container = Window.ScreenGui.Main.Container
 
 local players = game.Players
 local player = players.LocalPlayer
@@ -21,20 +22,20 @@ local root = char:FindFirstChild("HumanoidRootPart")
 
 local enabled = true
 
-local autoMove = c00lgui:AddToggle(Window,enabled,"Auto Move",function(bool) enabled = not enabled end)
+local autoMove = c00lgui:AddToggle(container,enabled,"Auto Move",function(bool) enabled = not enabled end)
 
 local aimUsesOffset = false
 
-local aimUseOffset = c00lgui:AddToggle(Window,aimUsesOffset,"Aim uses Offset",function(bool) aimUsesOffset = not aimUsesOffset end)
+local aimUseOffset = c00lgui:AddToggle(container,aimUsesOffset,"Aim uses Offset",function(bool) aimUsesOffset = not aimUsesOffset end)
 
 local autoEquip = true
 
-local autoEq = c00lgui:AddToggle(Window,autoEquip,"Auto Equip",function(bool) autoEquip = not autoEquip end)
+local autoEq = c00lgui:AddToggle(container,autoEquip,"Auto Equip",function(bool) autoEquip = not autoEquip end)
 local toolName = "sword" or "foil" -- As "sword" because the script finds the tool by whatever matches this within it's name. Foil is from Fencing.
 
 --local label1 = c00lgui:CreateLabel("In case games have two tools, this is here for you to define your tool by name.") -- I don't know why this is defined lmao.
 
-local toolnameinput = c00lgui:AddInput(Window,"ClassicSword",function(text) toolName = text end)
+local toolnameinput = c00lgui:AddInput(container,"ClassicSword",function(text) toolName = text end)
 repeat
 	wait()
 	humanoid = char:FindFirstChildOfClass("Humanoid")
@@ -55,11 +56,11 @@ local wiggleDistance = 13
 local wiggleSpeed = 45
 local wiggleAmount = 25
 
-local strafeOffset = c00lgui:AddSlider(Window,"Strafe Offset",strafe,0,10,1,function(value) strafe = value end)
+local strafeOffset = c00lgui:AddSlider(container,"Strafe Offset",strafe,0,10,1,function(value) strafe = value end)
 
-local strafeTiming = c00lgui:AddSlider(Window,"Strafe Time",strafeTime,0,1,0.01,function(value) strafeTime = value end)
+local strafeTiming = c00lgui:AddSlider(container,"Strafe Time",strafeTime,0,1,0.01,function(value) strafeTime = value end)
 
-local wiggleBool = c00lgui:AddToggle(Window,wiggling,"Wiggle",function(bool) wiggling = not wiggling end)
+local wiggleBool = c00lgui:AddToggle(container,wiggling,"Wiggle",function(bool) wiggling = not wiggling end)
 
 --local wiggleAmtDistBased = c00lgui:CreateToggle({
 --	Name = "Wiggle Amount is distance based",
@@ -70,21 +71,21 @@ local wiggleBool = c00lgui:AddToggle(Window,wiggling,"Wiggle",function(bool) wig
 --	end,
 --})
 
-local wigglingDistance = c00lgui:AddSlider(Window,"Wiggle Distance",wiggleDistance,1,100,1,function(value) wiggleDistance = value end)
+local wigglingDistance = c00lgui:AddSlider(container,"Wiggle Distance",wiggleDistance,1,100,1,function(value) wiggleDistance = value end)
 
-local wigglingSpeed = c00lgui:AddSlider(Window,"Wiggle Speed",wiggleSpeed,1,100,1,function(value) wiggleSpeed = value end)
+local wigglingSpeed = c00lgui:AddSlider(container,"Wiggle Speed",wiggleSpeed,1,100,1,function(value) wiggleSpeed = value end)
 
-local wiggleAmt = c00lgui:AddSlider(Window,"Wiggle Amount",wiggleAmount,1,100,1,function(value) wiggleAmount = value end)
+local wiggleAmt = c00lgui:AddSlider(container,"Wiggle Amount",wiggleAmount,1,100,1,function(value) wiggleAmount = value end)
 
 local turnStrafeOffset = 1
 
-local turnStrafe = c00lgui:AddSlider(Window,"Turn Strafe Offset",turnStrafeOffset,0,10,1,function(value) turnStrafeOffset = value end)
+local turnStrafe = c00lgui:AddSlider(container,"Turn Strafe Offset",turnStrafeOffset,0,10,1,function(value) turnStrafeOffset = value end)
 local aimOffset = 4
 
-local aimOff = c00lgui:AddSlider(Window,"Aim Offset",aimOffset,-10,10,1,function(value) aimOffset = value end)
+local aimOff = c00lgui:AddSlider(container,"Aim Offset",aimOffset,-10,10,1,function(value) aimOffset = value end)
 local lungeDistance = 20
 
-local lungeDistanceSlider = c00lgui:AddSlider(Window,"Lunge Distance",lungeDistance,1,100,1,function(value) lungeDistance = value end)
+local lungeDistanceSlider = c00lgui:AddSlider(container,"Lunge Distance",lungeDistance,1,100,1,function(value) lungeDistance = value end)
 local detectionDist = math.huge
 
 local function getnearesttarget()
@@ -139,7 +140,7 @@ local function findBest(tool, part, offset)
 		local visualLength = result and (result.Position - origin).Magnitude or 100
 		local midpoint = origin + direction * visualLength / 2
 
-		c00lguile.insert(rayResults, {
+		table.insert(rayResults, {
 			result = result,
 			direction = direction,
 			visualLength = visualLength,
@@ -292,9 +293,9 @@ delay(0,function()
 					end
 				end
 				if not aimUsesOffset then
-					random1N = 80000
-					bodyGyro.CFrame = bestCFrame
 					if bestCFrame then
+						random1N = 80000
+						bodyGyro.CFrame = bestCFrame
 						if wiggling then
 							if dist <= wiggleDistance then
 								random1N = 80000
